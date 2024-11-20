@@ -19,6 +19,11 @@ def photo_add_page(request):
     return render(request, "photos/photo-add-page.html", context)
 
 
+def photo_delete(request, pk):
+    Photo.objects.get(id=pk).delete()
+    return redirect("home")
+
+
 def photo_details_page(request, pk):
     photo = Photo.objects.get(pk=pk)
     likes = photo.photo_likes.all()
