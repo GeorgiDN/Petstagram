@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from petstagram.pets.forms import PetAddForm
+from petstagram.pets.forms import PetAddForm, PetEditForm
 from petstagram.pets.models import Pet
 
 
@@ -36,4 +36,20 @@ def pet_details_page(request, username, pet_slug):
 
 
 def pet_edit_page(request, username, pet_slug):
-    return render(request, "pets/pet-edit-page.html")
+    pet = Pet.objects.get(slug=pet_slug)  # Fetch the pet instance using the slug
+
+    if request.method == "POST":
+        form = PetEditForm(request.POST, instance=pet)
+        if form.is_valid():
+            form.save()
+            return redirect("pet-details", username=username, pet_slug=pet_slug)
+    else:
+        form = PetEditForm(instance=pet)  # Prepopulate form with the pet instance
+
+    context = {
+        "form": form,
+        "pet": pet,
+    }
+
+    return render(request, "pets/pet-edit-page.html", context)
+
