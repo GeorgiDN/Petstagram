@@ -12,8 +12,11 @@
                     <img src={% static 'images/search.png' %} height="18" alt="img2" >
                 </button>
             </form>
-
-            {% include "common/pet_posts.html" %}
+            
+            {% for photo in all_photos %}
+                {% include "common/pet_posts.html" %}
+            {% endfor %}
+        
         </div>
     </div>
 {% endblock %}
