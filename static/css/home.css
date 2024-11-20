@@ -86,7 +86,7 @@ body {
 .searchbar img {
     position: absolute;
     margin-left: -2.5rem;
-    margin-top: -0.8rem;
+    margin-top: -0.5rem;
 }
 
 .searchbar input::placeholder {
@@ -449,3 +449,10 @@ div.footer {
     color: #ff0000;
 }
 
+#id_pet_name {
+    border: 1px solid #ccc;
+    padding: 15px;
+    max-width: 1200px;
+
+
+}
