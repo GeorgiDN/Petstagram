@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, UpdateView
 
 from petstagram.common.forms import CommentForm
 from petstagram.pets.forms import PetAddForm, PetEditForm, PetDeleteForm
@@ -68,21 +68,37 @@ class PetDetailsPage(DetailView):
 #     return render(request, "pets/pet-details-page.html", context)
 
 
-def pet_edit_page(request, username, pet_slug):
-    pet = Pet.objects.get(slug=pet_slug)  # Fetch the pet instance using the slug
+class PetEditPage(UpdateView):
+    model = Pet
+    template_name = "pets/pet-edit-page.html"
+    form_class = PetEditForm
+    slug_url_kwarg = "pet_slug"
 
-    if request.method == "POST":
-        form = PetEditForm(request.POST, instance=pet)
-        if form.is_valid():
-            form.save()
-            return redirect("pet-details", username=username, pet_slug=pet_slug)
-    else:
-        form = PetEditForm(instance=pet)  # Prepopulate form with the pet instance
+    def get_success_url(self):
+        return reverse_lazy(
+            "pet-details",
+            kwargs={
+                "username": self.kwargs["username"],
+                "pet_slug": self.kwargs["pet_slug"],
+            }
+        )
 
-    context = {
-        "form": form,
-        "pet": pet,
-    }
 
-    return render(request, "pets/pet-edit-page.html", context)
+# def pet_edit_page(request, username, pet_slug):
+#     pet = Pet.objects.get(slug=pet_slug)  # Fetch the pet instance using the slug
+#
+#     if request.method == "POST":
+#         form = PetEditForm(request.POST, instance=pet)
+#         if form.is_valid():
+#             form.save()
+#             return redirect("pet-details", username=username, pet_slug=pet_slug)
+#     else:
+#         form = PetEditForm(instance=pet)  # Prepopulate form with the pet instance
+#
+#     context = {
+#         "form": form,
+#         "pet": pet,
+#     }
+#
+#     return render(request, "pets/pet-edit-page.html", context)
 
