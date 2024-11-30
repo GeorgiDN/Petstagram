@@ -34,19 +34,33 @@ def photo_delete(request, pk):
     return redirect("home")
 
 
-def photo_details_page(request, pk):
-    photo = Photo.objects.get(pk=pk)
-    likes = photo.photo_likes.all()
-    comments = photo.photo_comments.all()
-    comment_form = CommentForm()
+class PhotoDetailsView(UpdateView):
+    model = Photo
+    template_name = "photos/photo-details-page.html"
+    fields = []  # No fields are editable via this view
 
-    context = {
-        "photo": photo,
-        "likes": likes,
-        "comments": comments,
-    }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["likes"] = self.object.photo_likes.all()
+        context["comments"] = self.object.photo_comments.all()
+        context["comment_form"] = CommentForm()
+        context["photo_page"] = True
+        return context
 
-    return render(request, "photos/photo-details-page.html", context)
+
+# def photo_details_page(request, pk):
+#     photo = Photo.objects.get(pk=pk)
+#     likes = photo.photo_likes.all()
+#     comments = photo.photo_comments.all()
+#     comment_form = CommentForm()
+#
+#     context = {
+#         "photo": photo,
+#         "likes": likes,
+#         "comments": comments,
+#     }
+#
+#     return render(request, "photos/photo-details-page.html", context)
 
 
 class PhotoEditPage(UpdateView):
