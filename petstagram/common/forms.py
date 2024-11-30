@@ -1,10 +1,8 @@
 from django import forms
-
 from petstagram.common.models import Comment
-
-
 from django import forms
 from .models import Comment
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -12,7 +10,7 @@ class CommentForm(forms.ModelForm):
         fields = ["text"]
         widgets = {
             "text": forms.Textarea(attrs={
-                "placeholder": "Write a comment...",
+                "placeholder": "Add a comment...",
                 "rows": 4,
                 "cols": 40,
                 "class": "form-control",  # Add CSS class if needed
