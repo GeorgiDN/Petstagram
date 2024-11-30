@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
 from petstagram.common.forms import CommentForm
 from petstagram.pets.forms import PetAddForm, PetEditForm, PetDeleteForm
@@ -29,17 +29,38 @@ class PetAddPage(CreateView):
 #     return render(request, "pets/pet-add-page.html", context)
 
 
-def pet_delete_page(request, username, pet_slug):
-    pet = Pet.objects.get(slug=pet_slug)
-    form = PetDeleteForm(instance=pet)
+class PetDeletePage(DeleteView):
+    model = Pet
+    template_name = "pets/pet-delete-page.html"
+    slug_url_kwarg = "pet_slug"
+    form_class = PetDeleteForm
+    success_url = reverse_lazy("profile-details", kwargs={"pk": 1})
 
-    if request.method == "POST":
-        pet.delete()
-        return redirect("profile-details", pk=1)
+    def get_initial(self):
+        return self.get_object().__dict__
 
-    context = {"form": form}
+    # because the fields are disabled
+    # if the fields are readonly - it is not necessary
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            "data": self.get_initial()
+        })
 
-    return render(request, "pets/pet-delete-page.html", context)
+        return kwargs
+
+
+# def pet_delete_page(request, username, pet_slug):
+#     pet = Pet.objects.get(slug=pet_slug)
+#     form = PetDeleteForm(instance=pet)
+#
+#     if request.method == "POST":
+#         pet.delete()
+#         return redirect("profile-details", pk=1)
+#
+#     context = {"form": form}
+#
+#     return render(request, "pets/pet-delete-page.html", context)
 
 
 class PetDetailsPage(DetailView):
