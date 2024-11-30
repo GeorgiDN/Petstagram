@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from petstagram.common.forms import CommentForm
 from petstagram.pets.forms import PetAddForm, PetEditForm, PetDeleteForm
@@ -42,18 +42,30 @@ def pet_delete_page(request, username, pet_slug):
     return render(request, "pets/pet-delete-page.html", context)
 
 
-def pet_details_page(request, username, pet_slug):
-    pet = Pet.objects.get(slug=pet_slug)
-    all_photos = pet.photo_set.all()
-    comment_form = CommentForm()
+class PetDetailsPage(DetailView):
+    model = Pet
+    template_name = "pets/pet-details-page.html"
+    slug_url_kwarg = "pet_slug"
 
-    context = {
-        "pet": pet,
-        "all_photos": all_photos,
-        "comment_form": comment_form,
-    }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["all_photos"] = context["pet"].photo_set.all()
+        context["comment_form"] = CommentForm()
+        return context
 
-    return render(request, "pets/pet-details-page.html", context)
+
+# def pet_details_page(request, username, pet_slug):
+#     pet = Pet.objects.get(slug=pet_slug)
+#     all_photos = pet.photo_set.all()
+#     comment_form = CommentForm()
+#
+#     context = {
+#         "pet": pet,
+#         "all_photos": all_photos,
+#         "comment_form": comment_form,
+#     }
+#
+#     return render(request, "pets/pet-details-page.html", context)
 
 
 def pet_edit_page(request, username, pet_slug):

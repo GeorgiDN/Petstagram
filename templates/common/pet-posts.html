@@ -134,7 +134,8 @@
 
             <form method="post" action="{% url 'comment' photo.pk %}">
                 {% csrf_token %}
-                {{ comment_form.as_p }}
+                <textarea name="text" rows="4" cols="40" class="form-control"
+                          placeholder="Add comment..."></textarea>
                 <button type="submit">Post</button>
             </form>
         </div>
