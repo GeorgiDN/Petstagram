@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
@@ -7,7 +9,7 @@ from petstagram.photos.forms import PhotoAddForm, PhotoEditForm
 from petstagram.photos.models import Photo
 
 
-class PhotoAddPage(CreateView):
+class PhotoAddPage(LoginRequiredMixin, CreateView):
     model = Photo
     form_class = PhotoAddForm
     template_name = "photos/photo-add-page.html"
@@ -35,12 +37,13 @@ class PhotoAddPage(CreateView):
 #     return render(request, "photos/photo-add-page.html", context)
 
 
+@login_required
 def photo_delete(request, pk):
     Photo.objects.get(id=pk).delete()
     return redirect("home")
 
 
-class PhotoDetailsView(UpdateView):
+class PhotoDetailsView(LoginRequiredMixin, UpdateView):
     model = Photo
     template_name = "photos/photo-details-page.html"
     fields = []  # No fields are editable via this view
@@ -69,7 +72,7 @@ class PhotoDetailsView(UpdateView):
 #     return render(request, "photos/photo-details-page.html", context)
 
 
-class PhotoEditPage(UpdateView):
+class PhotoEditPage(LoginRequiredMixin, UpdateView):
     model = Photo
     form_class = PhotoEditForm
     template_name = "photos/photo-edit-page.html"
