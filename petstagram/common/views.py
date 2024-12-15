@@ -21,6 +21,11 @@ class HomePage(ListView):
         context["comment_form"] = CommentForm()
         context["search_form"] = SearchForm(self.request.GET)
 
+        user = self.request.user
+
+        for photo in context["all_photos"]:
+            photo.has_liked = photo.photo_likes.filter(user=user).exists() if user.is_authenticated else False
+
         return context
 
     def get_queryset(self):
@@ -67,7 +72,10 @@ class HomePage(ListView):
 
 @login_required
 def likes_functionality(request, photo_id):
-    liked_object = Like.objects.filter(to_photo_id=photo_id).first()
+    liked_object = Like.objects.filter(
+        to_photo_id=photo_id,
+        user=request.user,
+    ).first()
 
     if liked_object:
         liked_object.delete()
