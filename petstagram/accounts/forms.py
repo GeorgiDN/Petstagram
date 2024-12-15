@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 UserModel = get_user_model()
 
 
-class AppUserChangeFrom(UserChangeForm):
+class AppUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = UserModel
 
@@ -12,4 +12,5 @@ class AppUserChangeFrom(UserChangeForm):
 class AppUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = UserModel
+        fields = ("email", )
 
