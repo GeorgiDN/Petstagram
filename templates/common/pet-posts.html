@@ -7,9 +7,15 @@
             <a href="profile details">
                 <div class="profilepic">
                     <div class="profile_img">
-                        <div class="image">
-                            <img src="/static/images/person.png" alt="img8">
-                        </div>
+                        {% if photo.user.profile.profile_picture %}
+                            <div class="image">
+                                <img src="{{ photo.user.profile.profile_picture }}" alt="img8">
+                            </div>
+                        {% else %}
+                            <div class="image">
+                                <img src="{% static 'images/person.png' %}" alt="img8">
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </a>
