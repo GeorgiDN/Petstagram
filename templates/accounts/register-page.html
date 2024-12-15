@@ -1,4 +1,6 @@
 {% extends "common/base.html" %}
+{% load placeholder_filter %}
+
 
 {% block content %}
     <!-- Start Register Section -->
@@ -11,13 +13,13 @@
 
                 {% csrf_token %}
 
-                {{ form.email }}
+                {{ form.email|placeholder:"Email" }}
                 {{ form.email.errors }}
 
-                {{ form.password1 }}
+                {{ form.password1|placeholder:"Password" }}
                 {{ form.password1.errors }}
 
-                {{ form.password2 }}
+                {{ form.password2|placeholder:"Confirm Password" }}
                 {{ form.password2.errors }}
     
                 <!-- Register Button -->
