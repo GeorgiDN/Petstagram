@@ -28,21 +28,6 @@ class PetAddPage(LoginRequiredMixin, CreateView):
         )
 
 
-# def pet_add_page(request):
-#     form = PetAddForm(request.POST or None)
-#
-#     if request.method == "POST":
-#         if form.is_valid():
-#             form.save()
-#             return redirect("profile-details", pk=1)
-#
-#     context = {
-#         "form": form,
-#     }
-#
-#     return render(request, "pets/pet-add-page.html", context)
-
-
 class PetDeletePage(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Pet
     template_name = "pets/pet-delete-page.html"
@@ -75,19 +60,6 @@ class PetDeletePage(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return kwargs
 
 
-# def pet_delete_page(request, username, pet_slug):
-#     pet = Pet.objects.get(slug=pet_slug)
-#     form = PetDeleteForm(instance=pet)
-#
-#     if request.method == "POST":
-#         pet.delete()
-#         return redirect("profile-details", pk=1)
-#
-#     context = {"form": form}
-#
-#     return render(request, "pets/pet-delete-page.html", context)
-
-
 class PetDetailsPage(LoginRequiredMixin, DetailView):
     model = Pet
     template_name = "pets/pet-details-page.html"
@@ -97,21 +69,15 @@ class PetDetailsPage(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["all_photos"] = context["pet"].photo_set.all()
         context["comment_form"] = CommentForm()
+
+        all_photos = context["pet"].photo_set.all()
+
+        for photo in all_photos:
+            photo.has_liked = photo.photo_likes.filter(user=self.request.user).exists()
+
+        context["all_photos"] = all_photos
+
         return context
-
-
-# def pet_details_page(request, username, pet_slug):
-#     pet = Pet.objects.get(slug=pet_slug)
-#     all_photos = pet.photo_set.all()
-#     comment_form = CommentForm()
-#
-#     context = {
-#         "pet": pet,
-#         "all_photos": all_photos,
-#         "comment_form": comment_form,
-#     }
-#
-#     return render(request, "pets/pet-details-page.html", context)
 
 
 class PetEditPage(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -132,6 +98,48 @@ class PetEditPage(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 "pet_slug": self.kwargs["pet_slug"],
             }
         )
+
+# FBV
+# def pet_add_page(request):
+#     form = PetAddForm(request.POST or None)
+#
+#     if request.method == "POST":
+#         if form.is_valid():
+#             form.save()
+#             return redirect("profile-details", pk=1)
+#
+#     context = {
+#         "form": form,
+#     }
+#
+#     return render(request, "pets/pet-add-page.html", context)
+
+
+# def pet_delete_page(request, username, pet_slug):
+#     pet = Pet.objects.get(slug=pet_slug)
+#     form = PetDeleteForm(instance=pet)
+#
+#     if request.method == "POST":
+#         pet.delete()
+#         return redirect("profile-details", pk=1)
+#
+#     context = {"form": form}
+#
+#     return render(request, "pets/pet-delete-page.html", context)
+
+
+# def pet_details_page(request, username, pet_slug):
+#     pet = Pet.objects.get(slug=pet_slug)
+#     all_photos = pet.photo_set.all()
+#     comment_form = CommentForm()
+#
+#     context = {
+#         "pet": pet,
+#         "all_photos": all_photos,
+#         "comment_form": comment_form,
+#     }
+#
+#     return render(request, "pets/pet-details-page.html", context)
 
 # def pet_edit_page(request, username, pet_slug):
 #     pet = Pet.objects.get(slug=pet_slug)  # Fetch the pet instance using the slug
