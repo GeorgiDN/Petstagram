@@ -114,7 +114,11 @@
                                     <div class="profile_img">
                                         <div class="image">
                                             <!-- User Profile Image -->
-                                            <img src="{% static 'images/person.png' %}" alt="img8">
+                                            {% if comment.user.profile.profile_picture %}
+                                                <img src="{{ comment.user.profile.profile_picture }}" alt="profile-img">
+                                            {% else %}
+                                                <img src="{% static 'images/person.png' %}" alt="img8">
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
